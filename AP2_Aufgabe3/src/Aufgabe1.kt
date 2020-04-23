@@ -1,6 +1,6 @@
 import java.util.Random
 
-class Laufstrecke(var Strecke_laenge : Int,var Strecke_name :String,var Strecke_sehenswurd : String) {
+class Laufstrecke(var Strecke_laenge : Int,var Strecke_name :String,var Strecke_sehenswurd : List<String>) {
 
 
 	fun testing(): String{
@@ -8,9 +8,11 @@ class Laufstrecke(var Strecke_laenge : Int,var Strecke_name :String,var Strecke_
 	}
 
 	override fun toString(): String{
+		val tmp = Strecke_sehenswurd.toMutableList()
+		tmp.add(tmp.lastIndex," und ")
 		return "Die Strecke ${Strecke_name}" +
 		 "(${Strecke_laenge} m) verläuft entlang " + 
-		 "${Strecke_sehenswurd}"
+		 "${tmp.joinToString(" ")}"
 	}
 
 	fun ist_gleich(streckeB : Laufstrecke) : Boolean{
@@ -24,8 +26,9 @@ class Laufstrecke(var Strecke_laenge : Int,var Strecke_name :String,var Strecke_
 
 
 fun main(){
-	val beispielnamen = arrayOf("Nürburgring","Hockenheimring","Lausitzring","Rallye Monte Carlo","Le Mans")
-	val strecken = Array(5) { i -> Laufstrecke(2,beispielnamen[i],"Bergstadt,Talstadt.")}
+	val beispielNamen = arrayOf("Nürburgring","Hockenheimring","Lausitzring","Rallye Monte Carlo","Le Mans")
+	val beispielSehenswuerdigkeit = arrayOf("dem Kolosseum in Rom","der Louvre","die Sixtinische Kapelle","die Freiheitsstatue","derEiffelturm","die Sagrada Família")
+	val strecken = Array(5) { i -> Laufstrecke(2,beispielNamen[i],beispielSehenswuerdigkeit.slice(0..Random().nextInt(5)))}
 	//val random = Random()
 	ausgabeAlle(strecken)
 	for (x in 0..4){
@@ -114,3 +117,80 @@ fun ausgabeLaengsteStrecke ( strecken : Array<Laufstrecke> ) {
 		       |${candidate.Strecke_laenge} m Länge """.trimMargin())
 // Gib nur die Strecke mit der maximalen Länge auf der Konsole aus
 }
+
+fun berechneGesamteLauflaenge ( strecken : Array<Laufstrecke>) : Int {
+	var acc = 0
+	for (strecke in strecken){
+		acc += strecke.Strecke_laenge
+	}
+return acc
+}
+// Berechne, wie viele Strecken gelaufen werden müssen, um
+// die mit zielMeter festgelegten Meter zu laufen
+fun berechneAnzahlStrecken ( strecke : Laufstrecke ,zielMeter : Int ) : Int {
+	var acc = 0
+	var sacc = 0
+	while(acc < zielMeter){
+		acc += strecke.Strecke_laenge
+		sacc += 1
+		}
+	return sacc
+}
+
+// Prüfe, ob bei einer der strecken im Array die gesuchte
+// Sehenswürdigkeit dabei ist.
+fun sehensWuerdigkeitDabei ( sehenswuerdigkeit : String,
+strecken: Array<Laufstrecke>) : Boolean {
+	for ( s in strecken ){
+		if ( sehenswuerdigkeit in s.Strecke_sehenswurd){
+			return true
+		}
+	}
+	return false	
+}
+
+// Gib die durchschnittliche Länge der Strecken zurück
+fun durchschnittsLaenge (strecken : Array<Laufstrecke>) : Int {
+	var avg = 0
+	var nStrecke = 0
+
+	for (s in strecken){
+		avg += s.Strecke_laenge
+		nStrecke += 1
+	}
+	return (avg/nStrecke)
+}
+
+// Gib die Strecke mit der höchsten Länge zurück:
+fun laengsteStrecke (strecken : Array<Laufstrecke>) : Laufstrecke {
+	var candidate = strecken[0]
+	for (streckeB in strecken){
+		if(candidate.Strecke_laenge > streckeB.Strecke_laenge){
+			candidate = streckeB
+		}
+	}
+	return candidate
+}
+// Gib die Strecke mit der kürzesten Länge zurück:
+fun kuerzesteStrecke (strecken : Array<Laufstrecke>) : Laufstrecke  {
+	var candidate = strecken[0]
+	for (streckeB in strecken){
+		if(candidate.Strecke_laenge < streckeB.Strecke_laenge){
+			candidate = streckeB
+		}
+	}
+	return candidate
+}
+// Gib eine Strecke zurück, die an der sehenswuerdigkeit vorbei führt
+fun streckeMitSehenswuerdigkeit
+( sehenswuerdigkeit : String , strecken : Array<Laufstrecke>) : Laufstrecke {
+	for ( s in strecken ){
+		if ( sehenswuerdigkeit in s.Strecke_sehenswurd){
+			return s
+		}
+	}
+	return Laufstrecke(0,"",listOf(" "," "))	
+}
+// Gib von strecke1 und strecke 2 die längere Strecke zurück
+fun laengereStrecke (strecke1 : Laufstrecke ,
+strecke2 : Laufstrecke) : Laufstrecke =  if (strecke1.Strecke_laenge > strecke2.Strecke_laenge) strecke1 else strecke2
