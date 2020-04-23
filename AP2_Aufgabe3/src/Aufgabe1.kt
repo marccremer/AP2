@@ -27,7 +27,7 @@ class Laufstrecke(var Strecke_laenge : Int,var Strecke_name :String,var Strecke_
 
 fun main(){
 	val beispielNamen = arrayOf("Nürburgring","Hockenheimring","Lausitzring","Rallye Monte Carlo","Le Mans")
-	val beispielSehenswuerdigkeit = arrayOf("dem Kolosseum in Rom","der Louvre","die Sixtinische Kapelle","die Freiheitsstatue","derEiffelturm","die Sagrada Família")
+	val beispielSehenswuerdigkeit = arrayOf("dem Kolosseum in Rom","der Louvre","die Sixtinische Kapelle","die Freiheitsstatue","der Eiffelturm","die Sagrada Família")
 	val strecken = Array(5) { i -> Laufstrecke(2,beispielNamen[i],beispielSehenswuerdigkeit.slice(0..Random().nextInt(5)))}
 	//val random = Random()
 	ausgabeAlle(strecken)
@@ -38,14 +38,30 @@ fun main(){
 	val max = 1200 
 	println("ausgabeMinMax zwischen $min und $max")
 	ausgabeMinMax(strecken,min,max)
-	val ziel = 4000
+	val ziel = 9984
+	val beispielsw = beispielSehenswuerdigkeit.random()
+	val beispielstrecke = strecken[Random().nextInt(4)]
 	println("ausgabeBisZielMeterErreicht für $ziel Meter")
 	ausgabeBisZielMeterErreicht(strecken,ziel)
-	println("ausgabeBisStrecke für ${strecken[2].Strecke_name}.")
-	ausgabeBisStrecke(strecken[2],strecken)
+	println("ausgabeBisStrecke für ${beispielstrecke.Strecke_name}.")
+	ausgabeBisStrecke(beispielstrecke,strecken)
 	ausgabeKuerzesteStrecke(strecken)
 	ausgabeLaengsteStrecke(strecken)
+	println("Gesamtlauflänge ist:${berechneGesamteLauflaenge(strecken)} Meter.")
+	println("""
+				Man muss die Strecke ${beispielstrecke.Strecke_name}
+				${berechneAnzahlStrecken(beispielstrecke,ziel)}-mal laufen um auf $ziel m zu kommen""".trimIndent())
+	println("Die Sehenswürdigkeit $beispielsw ist ${booltostring(sehensWuerdigkeitDabei(beispielsw,strecken))} auf einer der Strecken  ")
+	println("Die durchschnittliche Länge alles Strecken ist:${durchschnittsLaenge(strecken)} m")
+	println("Die Strecke ${laengsteStrecke(strecken).Strecke_name} ist die längste Strecke.")
+	println("Die Strecke ${kuerzesteStrecke(strecken).Strecke_name} ist die kürzeste Strecke.")
+	println("Die Strecke ${streckeMitSehenswuerdigkeit(beispielsw,strecken).Strecke_name} führt and ${beispielsw.substring(3)} vorbei")
+	println("Zwischen ${beispielstrecke.Strecke_name} und ${strecken[4].Strecke_name} ist "
+			+ "${laengereStrecke(beispielstrecke,strecken[4]).Strecke_name} größer"	)
 }
+
+fun booltostring(b : Boolean): String  = if (b) "" else "nicht" 
+
 
 fun ausgabeAlle(strecken : Array<Laufstrecke>) {
 	for (strecke in strecken){
