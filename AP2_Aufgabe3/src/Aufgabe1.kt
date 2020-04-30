@@ -2,11 +2,6 @@ import java.util.Random
 
 class Laufstrecke(var Strecke_laenge : Int,var Strecke_name :String,var Strecke_sehenswurd : List<String>) {
 
-
-	fun testing(): String{
-		return "ass"
-	}
-
 	override fun toString(): String{
 		val tmp = Strecke_sehenswurd.toMutableList()
 		tmp.add(tmp.lastIndex," und ")
@@ -29,18 +24,20 @@ fun main(){
 	val beispielNamen = arrayOf("Nürburgring","Hockenheimring","Lausitzring","Rallye Monte Carlo","Le Mans")
 	val beispielSehenswuerdigkeit = arrayOf("dem Kolosseum in Rom","der Louvre","die Sixtinische Kapelle","die Freiheitsstatue","der Eiffelturm","die Sagrada Família")
 	val strecken = Array(5) { i -> Laufstrecke(2,beispielNamen[i],beispielSehenswuerdigkeit.slice(0..Random().nextInt(5)))}
-	//val random = Random()
 	ausgabeAlle(strecken)
+	//randomize
 	for (x in 0..4){
 		strecken[x].Strecke_laenge = x+1000 + Random().nextInt(300)
 	}
-	val min = 1150
+	val min = 1100
 	val max = 1200 
-	println("ausgabeMinMax zwischen $min und $max")
-	ausgabeMinMax(strecken,min,max)
 	val ziel = 9984
 	val beispielsw = beispielSehenswuerdigkeit.random()
 	val beispielstrecke = strecken[Random().nextInt(4)]
+
+	println("ausgabeMinMax zwischen $min und $max")
+	ausgabeMinMax(strecken,min,max)
+	println()
 	println("ausgabeBisZielMeterErreicht für $ziel Meter")
 	ausgabeBisZielMeterErreicht(strecken,ziel)
 	println("ausgabeBisStrecke für ${beispielstrecke.Strecke_name}.")
@@ -48,18 +45,19 @@ fun main(){
 	ausgabeKuerzesteStrecke(strecken)
 	ausgabeLaengsteStrecke(strecken)
 	println("Gesamtlauflänge ist:${berechneGesamteLauflaenge(strecken)} Meter.")
-	println("""
-				Man muss die Strecke ${beispielstrecke.Strecke_name}
-				${berechneAnzahlStrecken(beispielstrecke,ziel)}-mal laufen um auf $ziel m zu kommen""".trimIndent())
-	println("Die Sehenswürdigkeit $beispielsw ist ${booltostring(sehensWuerdigkeitDabei(beispielsw,strecken))} auf einer der Strecken  ")
+	println("Man muss die Strecke ${beispielstrecke.Strecke_name} "
+		    +"${berechneAnzahlStrecken(beispielstrecke,ziel)}-mal laufen um auf $ziel m zu kommen")
+	println("Die Sehenswürdigkeit $beispielsw ist ${booltostring(sehensWuerdigkeitDabei(beispielsw,strecken))} "
+			+"auf einer der Strecken  ")
 	println("Die durchschnittliche Länge alles Strecken ist:${durchschnittsLaenge(strecken)} m")
 	println("Die Strecke ${laengsteStrecke(strecken).Strecke_name} ist die längste Strecke.")
 	println("Die Strecke ${kuerzesteStrecke(strecken).Strecke_name} ist die kürzeste Strecke.")
-	println("Die Strecke ${streckeMitSehenswuerdigkeit(beispielsw,strecken).Strecke_name} führt and ${beispielsw.substring(3)} vorbei")
+	println("Die Strecke ${streckeMitSehenswuerdigkeit(beispielsw,strecken).Strecke_name} führt an ${beispielsw.substring(3)} vorbei")
 	println("Zwischen ${beispielstrecke.Strecke_name} und ${strecken[4].Strecke_name} ist "
 			+ "${laengereStrecke(beispielstrecke,strecken[4]).Strecke_name} größer"	)
 }
 
+// bad implementation but it works
 fun booltostring(b : Boolean): String  = if (b) "" else "nicht" 
 
 
@@ -80,15 +78,17 @@ fun ausgabeMinMax(strecken : Array<Laufstrecke>,min : Int,max: Int){
 fun ausgabeBisZielMeterErreicht ( strecken : Array<Laufstrecke> ,zielMeter: Int) {
 	var gelaufen = 0
 	println("Wir wollen $zielMeter Meter laufen.\nLos,Gehts")
-	for (strecke in strecken){
-		if(gelaufen < zielMeter){
-			gelaufen += strecke.Strecke_laenge
-			println("""|Wir haben sind Strecke ${strecke.Strecke_name} gelaufen.
-				       |Das heist wir sind ${gelaufen} Meter glaufen""".trimMargin())
+	while ( gelaufen < zielMeter){
+		for (strecke in strecken){
+			if(gelaufen < zielMeter){
+				gelaufen += strecke.Strecke_laenge
+				println("""|Wir haben sind Strecke ${strecke.Strecke_name} gelaufen.
+					       |Das heist wir sind ${gelaufen} Meter glaufen""".trimMargin())
+			}
 		}
-	println("""|Wir sind am unserem Ziel von $zielMeter Meter angekommen.
-		       |Insgesamt sind wir ${gelaufen} Meter glaufen""".trimMargin())
 	}
+	println("""|Wir sind am unserem Ziel von $zielMeter Meter angekommen.
+		       |Insgesamt sind wir ${gelaufen} Meter glaufen \n""".trimMargin())
 // Durchlaufe alle Strecken
 // Addiere, wie viele Meter schon gelaufen sind
 // Wenn zielMeter erreicht ist: Dann höre auf zu laufen
@@ -100,7 +100,7 @@ fun ausgabeBisStrecke (letzteStrecke : Laufstrecke, strecken: Array<Laufstrecke>
 	println("Wir wollen bis zum ${letzteStrecke.Strecke_name} laufen")
 	outer@ for (strecke in strecken){
 		if (strecken[nStrecke].ist_gleich(letzteStrecke)){
-			println("Wir haben den von ${strecken[nStrecke].Strecke_name} erreicht.")
+			println("Wir haben den von ${strecken[nStrecke].Strecke_name} erreicht.\n")
 			break@outer
 		}else{
 			println("Wir laufen auf ${strecken[nStrecke].Strecke_name}.")
@@ -181,7 +181,7 @@ fun durchschnittsLaenge (strecken : Array<Laufstrecke>) : Int {
 fun laengsteStrecke (strecken : Array<Laufstrecke>) : Laufstrecke {
 	var candidate = strecken[0]
 	for (streckeB in strecken){
-		if(candidate.Strecke_laenge > streckeB.Strecke_laenge){
+		if(candidate.Strecke_laenge < streckeB.Strecke_laenge){
 			candidate = streckeB
 		}
 	}
@@ -191,7 +191,7 @@ fun laengsteStrecke (strecken : Array<Laufstrecke>) : Laufstrecke {
 fun kuerzesteStrecke (strecken : Array<Laufstrecke>) : Laufstrecke  {
 	var candidate = strecken[0]
 	for (streckeB in strecken){
-		if(candidate.Strecke_laenge < streckeB.Strecke_laenge){
+		if(candidate.Strecke_laenge > streckeB.Strecke_laenge){
 			candidate = streckeB
 		}
 	}
